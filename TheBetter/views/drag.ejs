@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Hello Drag World</title>
+	<style>
+		.list {
+			display:flex;
+			width:100%;
+		}
+		.item{
+			flex:1;
+			width:50px;
+			height:50px;
+			margin:10px;
+			padding: 30px;
+			font-size: 20px;
+			background-color: aquamarine;
+			color: red;
+
+		}
+	</style>
+</head>
+<body>
+	<li class="list">
+		<div class="item" draggable="true">1</div>
+		<div class="item" draggable="true">2</div>
+		<div class="item" draggable="true">3</div>
+		<div class="item" draggable="true">4</div>
+		<div class="item" draggable="true">5</div>
+	</li>
+</body>
+<script>
+	const list = document.querySelector(".list")
+
+	// dragstart, dragover, drop
+	// nextElementSibling -> 옆에 있는 요소? 
+	let picked = null;
+	let pickedIndex = null;
+	list.addEventListener("dragstart", (e)=>{
+		const obj = e.target
+
+		// html collection은 index를 가지고 있지만 배열이 아니다
+		picked = e.target
+		pickedIndex = [...obj.parentNode.children].indexOf(obj)
+		// spreadoperator를 사용해야한다?
+		// 껍데기는 날아가고 내용물만 가져올 수 있다
+		// const testArray = [1,2,3,4]
+		// const newArray = [...testArray]
+		
+		
+	})
+	list.addEventListener("dragover", (e)=>{
+		// dragover 기본적으로 설계된 기능이 작동하지 않는다
+		e.preventDefault() 
+		
+	})
+	list.addEventListener("drop", (e)=>{
+		const obj = e.target;
+		const index = [...obj.parentNode.children].indexOf(obj)
+
+		//if(index > pickedIndex){
+		//	obj.after(picked);
+		//} else {
+		//	obj.before(picked);
+		//}
+		/**
+		 * 3항 조건식을 사용하면 편함
+		 * 조건 ? 참 : 거짓 
+		 */
+		index > pickedIndex ? obj.after(picked): obj.before(picked)
+	})
+</script>
+</html>
