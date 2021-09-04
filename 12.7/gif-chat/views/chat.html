@@ -61,6 +61,7 @@
       div.appendChild(chat);
       document.querySelector('#chat-list').appendChild(div);
     });
+	// router에서 chat data를 전달 받아서 채팅내역 생성해서 rendering
     socket.on('chat', function (data) {
       const div = document.createElement('div');
       if (data.user === '{{user}}') {
@@ -86,6 +87,7 @@
     document.querySelector('#chat-form').addEventListener('submit', function (e) {
       e.preventDefault();
       if (e.target.chat.value) {
+		  // 채팅내용을 POST로 router로 보내는 것
         axios.post('/room/{{room._id}}/chat', {
           chat: this.chat.value,
         })
