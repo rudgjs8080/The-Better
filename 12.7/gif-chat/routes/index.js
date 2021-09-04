@@ -8,6 +8,7 @@ const Chat = require('../schemas/chat');
 
 const router = express.Router();
 
+// 채팅방 목록을 보여주는 router
 router.get('/', async (req, res, next) => {
   try {
     const rooms = await Room.find({});
@@ -18,10 +19,12 @@ router.get('/', async (req, res, next) => {
   }
 });
 
+// 채팅방 생성하는 화면을 보여주는 router
 router.get('/room', (req, res) => {
   res.render('room', { title: 'GIF 채팅방 생성' });
 });
 
+// 실제로 방을 생성하는 router(get, post 차이)
 router.post('/room', async (req, res, next) => {
   try {
     const newRoom = await Room.create({
@@ -39,6 +42,7 @@ router.post('/room', async (req, res, next) => {
   }
 });
 
+// 채팅방 안에 들어가는 router
 router.get('/room/:id', async (req, res, next) => {
   try {
     const room = await Room.findOne({ _id: req.params.id });
@@ -46,6 +50,7 @@ router.get('/room/:id', async (req, res, next) => {
     if (!room) {
       return res.redirect('/?error=존재하지 않는 방입니다.');
     }
+	// 방에 비밀번호가 존재하고 방의 비밀번호가 틀렸을 때
     if (room.password && room.password !== req.query.password) {
       return res.redirect('/?error=비밀번호가 틀렸습니다.');
     }
@@ -72,6 +77,7 @@ router.delete('/room/:id', async (req, res, next) => {
     await Chat.remove({ room: req.params.id });
     res.send('ok');
     setTimeout(() => {
+		// 방 목록이 지워진걸 실시간으로 보내는것
       req.app.get('io').of('/room').emit('removeRoom', req.params.id);
     }, 2000);
   } catch (error) {

@@ -19,8 +19,9 @@ nunjucks.configure('views', {
   express: app,
   watch: true,
 });
-connect();
+connect(); // 몽고DB 서버 실행
 
+// session을 websocket에서 공유 그래야 같은 사람인지를 알 수 있다?
 const sessionMiddleware = session({
   resave: false,
   saveUninitialized: false,
@@ -36,7 +37,7 @@ app.use('/gif', express.static(path.join(__dirname, 'uploads')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
-app.use(sessionMiddleware);
+app.use(sessionMiddleware); 
 
 app.use((req, res, next) => {
   if (!req.session.color) {
@@ -66,4 +67,5 @@ const server = app.listen(app.get('port'), () => {
   console.log(app.get('port'), '번 포트에서 대기중');
 });
 
+// express server가 websocket에 들어가서 socket.js로 이동
 webSocket(server, app, sessionMiddleware);
