@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>live-drag</title>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+		const socket = io.connect('http://localhost:8005', {
+			path: '/socket.io',
+			transports: ['websocket'],
+		})
+		socket.on('news', (data) => {
+			console.log(data)
+			socket.emit('reply', 'hello nodejs')
+		})
+	</script>
+</head>
+<style>
+	.container {
+		width:800px;
+		height: 400px;
+		border: 1px solid gray;
+	}
+	.box {
+		width:100px;
+		height: 100px;
+		background-color: blue;
+		position: absolute;
+	}
+</style>
+<body>
+	<section id="section7">
+		<h1>Ex-7 마우스 이벤트 객체 : 드래그 방식으로 박스 옮기기</h1>
+		<div class="container">
+			<div class="box"></div>
+		</div>
+	</section>
+</body>
+<script>
+	// Ex-7 MouseEvent Position	
+	window.addEventListener("load", () => {
+		const section = document.querySelector("#section7")
+		const container = section.querySelector(".container")
+		const box = section.querySelector(".box")
+		let dragging = false;
+		let offset = {x:0, y:0}
+		container.onmousedown = (e) => {
+			if(e.target === box){
+				dragging = true;
+			}
+		}
+		
+		container.onmousemove = (e) => {
+			if(dragging){
+				box.style.left = e.pageX-offset.x+"px"; // 단위를 써주지 않아서 움직이지 않는다
+				box.style.top = e.pageY-offset.y+"px";
+			}
+		}
+		container.onmouseup = (e) => {
+			dragging = false;
+		}
+		box.onmousedown = (e) => {
+			offset.x = e.offsetX;
+			offset.y = e.offsetY;
+			console.log(`log : ${offset.x}, ${offset.y}`)
+			axios.post('/x/p_x/y/p_y', {
+				p_x: offset.x,
+				p_y: offset.y,
+			})
+			.then(function (response) {
+    			console.log(response.config.data);
+  			})
+  			.catch(function (error) {
+    			console.log(error);
+  			});
+		}
+	})
+</script>
+</html>

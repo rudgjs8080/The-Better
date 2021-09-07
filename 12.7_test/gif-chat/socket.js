@@ -7,6 +7,7 @@ const cookie = require('cookie-signature');
 module.exports = (server, app, sessionMiddleware) => {
   const io = SocketIO(server, { path: '/socket.io' });// express server를 연결
 
+  
   const room = io.of('/room');
   const chat = io.of('/chat');
   
