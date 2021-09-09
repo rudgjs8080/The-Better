@@ -6,13 +6,14 @@ const session = require('express-session');
 const nunjucks = require('nunjucks');
 const dotenv = require('dotenv');
 const ColorHash = require('color-hash');
+const app = express();
 
 dotenv.config();
+
 const webSocket = require('./socket');
 const indexRouter = require('./routes');
 const connect = require('./schemas');
 
-const app = express();
 app.set('port', process.env.PORT || 8005);
 app.set('view engine', 'html');
 nunjucks.configure('views', {

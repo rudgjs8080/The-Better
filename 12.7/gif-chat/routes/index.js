@@ -71,7 +71,7 @@ router.get('/room/:id', async (req, res, next) => {
     return next(error);
   }
 });
-
+// 채팅방 삭제하는 router
 router.delete('/room/:id', async (req, res, next) => {
   try {
     await Room.remove({ _id: req.params.id });
@@ -86,6 +86,7 @@ router.delete('/room/:id', async (req, res, next) => {
     next(error);
   }
 });
+
 // chat.html에서 chat내용을 받아서 
 router.post('/room/:id/chat', async (req, res, next) => {
   try {
@@ -94,7 +95,8 @@ router.post('/room/:id/chat', async (req, res, next) => {
       user: req.session.color,
       chat: req.body.chat,
     });
-	// io 객체 받아와서 /chat 네임스페이스로 접속하고 방아이디로 접속한 다음 chat event를 뿌려주는 것
+	// io 객체 받아와서 /chat 네임스페이스로 접속하고 
+	// 방아이디로 접속한 다음 chat event를 뿌려주는 것
 	// 그러면 html에서 .on ('chat') 으로 받는다
     req.app.get('io').of('/chat').to(req.params.id).emit('chat', chat);
     res.send('ok');

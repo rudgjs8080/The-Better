@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>The Better</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <div class="logo">
+		<img src="../public/images/1234.png" />
+	  </div>
+	  <div class="nav">
+		<ul>
+		  <li>혼자하기</li>
+		  <li>함께하기</li>
+		</ul>
+	  </div>
+	  <div>
+		<div>
+		  <img
+			src="../public/images/1234.png"
+			width="80px"
+			height="70px"
+			draggable="true"
+			id="src_copy"
+			ondragstart="dragstart_handler(event);"
+			ondragend="dragend_handler(event);"
+		  />
+		</div>
+		<div
+		  id="dest_copy"
+		  ondrop="drop_handler(event);"
+		  ondragover="dragover_handler(event);"
+		></div>
+	  </div>
+
+	  <script src="/socket.io/socket.io.js"></script>
+	  <script>
+      const socket = io()
+      function dragstart_handler(ev) {
+        console.log("dragStart");
+        ev.dataTransfer.setData("text", ev.target.id);
+        ev.effectAllowed = "copyMove";
+      }
+      function dragover_handler(ev) {
+        console.log("dragOver");
+        // ev.currentTarget.style.background = "lightblue";
+        ev.preventDefault();
+        var puzzle_x = ev.offsetX;
+        var puzzle_y = ev.offsetY;
+        // console.log(puzzle_x, puzzle_y);
+        socket.emit("xy", puzzle_x, puzzle_y);
+      }
+      socket.on("xy", function (x, y) {
+        console.log(x, y);
+        var puzzle = document.createElement("img");
+        // img.src
+        // img.offsetX = x;
+        // img.offsetY = y;
+      });
+      function drop_handler(ev) {
+        console.log("Drop");
+        ev.preventDefault();
+        var id = ev.dataTransfer.getData("text");
+        if (id == "src_move" && ev.target.id == "dest_move")
+          ev.target.appendChild(document.getElementById(id));
+        if (id == "src_copy" && ev.target.id == "dest_copy") {
+          var nodeCopy = document.getElementById(id).cloneNode(true);
+          nodeCopy.id = "newId";
+          ev.target.appendChild(nodeCopy);
+        }
+      }
+      function dragend_handler(ev) {
+        console.log("dragEnd");
+        //  ev.target.style.border = "solid black";
+        ev.dataTransfer.clearData();
+      }
+    </script>
+  </body>
+
+</html>
